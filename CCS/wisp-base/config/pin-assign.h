@@ -66,7 +66,7 @@
 #define		PUART_RXSEL1			(P2SEL1)
 
 // P2.3 - RECEIVE - INPUT
-#define		PIN_RX			(BIT3)
+#define		PIN_RX			(BIT1)
 #define 	PRXIN			(P2IN)
 #define 	PDIR_RX			(P2DIR)
 #define		PRXIES			(P2IES)
@@ -106,66 +106,66 @@
  */
 
 // P3.4 - AUX1 -  INPUT/OUTPUT
-#define		PIN_AUX1			(BIT4)
-#define 	PAUX1IN				(P3IN)
-#define 	PDIR_AUX1			(P3DIR)
-#define		PAUX1SEL0			(P3SEL0)
-#define		PAUX1SEL1			(P3SEL1)
+#define		PIN_AUX1			(BIT0)
+#define 	PAUX1IN				(P1IN)
+#define 	PDIR_AUX1			(P1DIR)
+#define		PAUX1SEL0			(P1SEL0)
+#define		PAUX1SEL1			(P1SEL1)
 
 // P3.5 - AUX2 -  INPUT/OUTPUT
-#define		PIN_AUX2			(BIT5)
-#define 	PAUX2IN				(P3IN)
-#define 	PDIR_AUX2			(P3DIR)
-#define		PAUX2SEL0			(P3SEL0)
-#define		PAUX2SEL1			(P3SEL1)
+#define		PIN_AUX2			(BIT0)
+#define 	PAUX2IN				(P1IN)
+#define 	PDIR_AUX2			(P1DIR)
+#define		PAUX2SEL0			(P1SEL0)
+#define		PAUX2SEL1			(P1SEL1)
 
 // P3.6 - ACCEL_INT2 - INPUT
-#define 	PIN_ACCEL_INT2			(BIT6)
-#define 	PDIR_ACCEL_INT2			(P3DIR)
-#define		PACCEL_INT2SEL0			(P3SEL0)
-#define		PACCEL_INT2SEL1			(P3SEL1)
+#define 	PIN_ACCEL_INT2			(BIT0)
+#define 	PDIR_ACCEL_INT2			(P1DIR)
+#define		PACCEL_INT2SEL0			(P1SEL0)
+#define		PACCEL_INT2SEL1			(P1SEL1)
 
 // P3.7 - ACCEL_INT1 - INPUT
-#define 	PIN_ACCEL_INT1			(BIT7)
-#define 	PDIR_ACCEL_INT1			(P3DIR)
-#define		PACCEL_INT1SEL0			(P3SEL0)
-#define		PACCEL_INT1SEL1			(P3SEL1)
+#define 	PIN_ACCEL_INT1			(BIT0)
+#define 	PDIR_ACCEL_INT1			(P1DIR)
+#define		PACCEL_INT1SEL0			(P1SEL0)
+#define		PACCEL_INT1SEL1			(P1SEL1)
 
 /*
  * Port 4
  */
 
 // P4.0 - LED1 OUTPUT
-#define		PLED1OUT			(P4OUT)
-#define 	PIN_LED1			(BIT0)
-#define 	PDIR_LED1			(P4DIR)
+#define		PLED1OUT			(P2OUT)
+#define 	PIN_LED1			(BIT2)
+#define 	PDIR_LED1			(P2DIR)
 
 // P4.1 MEAS INPUT
-#define 	PIN_MEAS			(BIT1)
-#define		PMEASOUT			(P4OUT)
-#define		PMEASDIR			(P4DIR)
-#define		PMEASSEL0			(P4SEL0)
-#define		PMEASSEL1			(P4SEL1)
+#define 	PIN_MEAS			(BIT0)
+#define		PMEASOUT			(P1OUT)
+#define		PMEASDIR			(P1DIR)
+#define		PMEASSEL0			(P1SEL0)
+#define		PMEASSEL1			(P1SEL1)
 
 // P4.2 - ACCEL_EN - OUTPUT
-#define PIN_ACCEL_EN		BIT2
-#define POUT_ACCEL_EN		P4OUT
-#define PDIR_ACCEL_EN		P4DIR
+#define PIN_ACCEL_EN		BIT0
+#define POUT_ACCEL_EN		P1OUT
+#define PDIR_ACCEL_EN		P1DIR
 
 // P4.3 - ACCEL_CS - OUTPUT
-#define PIN_ACCEL_CS		BIT3
-#define POUT_ACCEL_CS		P4OUT
-#define PDIR_ACCEL_CS		P4DIR
+#define PIN_ACCEL_CS		BIT0
+#define POUT_ACCEL_CS		P1OUT
+#define PDIR_ACCEL_CS		P1DIR
 
 // P4.5 - RECEIVE ENABLE - OUTPUT
-#define     PIN_RX_EN       (BIT5)
-#define     PRXEOUT         (P4OUT)
-#define     PDIR_RX_EN      (P4DIR)
+#define     PIN_RX_EN       (BIT0)
+#define     PRXEOUT         (P1OUT)
+#define     PDIR_RX_EN      (P1DIR)
 
 
 // P4.6 - DEBUG LINE - OUTPUT
-#define     PIN_DBG0        (BIT6)
-#define     PDBGOUT         (P4OUT)
+#define     PIN_DBG0        (BIT0)
+#define     PDBGOUT         (P1OUT)
 
 /*
  * Port 5
@@ -199,19 +199,19 @@
  */
 /** @todo: Default for unused pins should be output, not tristate.  */
 /** @todo:  Make sure the Tx port pin should be tristate not output and unused pin to be output*/
-#ifndef __ASSEMBLER__
-#define setupDflt_IO() \
-    P1OUT = 0x00;\
-    P2OUT = 0x00;\
-    P3OUT = 0x00;\
-    P4OUT = 0x00;\
-    PJOUT = 0x00;\
-    P1DIR = 0x00;\
-    PJDIR = PIN_LED2;\
-    P2DIR = PIN_TX;\
-    P3DIR = 0x00;\
-    P4DIR = PIN_ACCEL_CS | PIN_LED1 | PIN_ACCEL_EN;\
-
-#endif /* ~__ASSEMBLER__ */
+//#ifndef __ASSEMBLER__
+//#define setupDflt_IO() \
+//    P1OUT = 0x00;\
+//    P2OUT = 0x00;\
+//    P1OUT = 0x00;\
+//    P2OUT = 0x00;\
+//    PJOUT = 0x00;\
+//    P1DIR = 0x00;\
+//    PJDIR = PIN_LED2;\
+//    P2DIR = PIN_TX;\
+//    P3DIR = 0x00;\
+//    P4DIR = PIN_ACCEL_CS | PIN_LED1 | PIN_ACCEL_EN;\
+//
+//#endif /* ~__ASSEMBLER__ */
 
 #endif /* PIN_ASSIGN_H */

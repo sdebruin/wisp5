@@ -37,18 +37,18 @@ BOOL SPI_initialize() {
 
 
     // Hardware peripheral initialization
-    BITSET(UCA1CTL1, UCSWRST);
+//    BITSET(UCA1CTL1, UCSWRST);
 
 //  UCA1CTL0 = UCMST | UCSYNC | UCCKPH | UCMSB;      // This instruction seem to work wrong since UA1CTL0 is an 8-bit register.
-    UCA1CTL0 = (UCMST>>8) | (UCSYNC>>8) | (UCCKPH>>8) | (UCMSB>>8);
-    UCA1CTL1 = UCSSEL_3 | UCSWRST;
-    UCA1BR0 = 3; // 500KHz for 4MHz clock
-    UCA1BR1 = 0;
-    UCA1IFG = 0;
+//    UCA1CTL0 = (UCMST>>8) | (UCSYNC>>8) | (UCCKPH>>8) | (UCMSB>>8);
+//    UCA1CTL1 = UCSSEL_3 | UCSWRST;
+//    UCA1BR0 = 3; // 500KHz for 4MHz clock
+//    UCA1BR1 = 0;
+//    UCA1IFG = 0;
     UCA0MCTLW = 0;  // No modulation, I don't think it is vital to write this command since the default should be like that.
 //	BITSET(P2SEL1 , PIN_ACCEL_SCLK | PIN_ACCEL_MISO | PIN_ACCEL_MOSI);
 //	BITCLR(P2SEL0 , PIN_ACCEL_SCLK | PIN_ACCEL_MISO | PIN_ACCEL_MOSI);
-    BITCLR(UCA1CTL1, UCSWRST);
+//    BITCLR(UCA1CTL1, UCSWRST);
 
     // State variable initialization
     spiSM.bPortInUse = FALSE;
@@ -121,13 +121,13 @@ BOOL SPI_transaction(uint8_t* rxBuf, uint8_t* txBuf, uint16_t size) {
         spiSM.bNewDataReceived = FALSE;
 
         // Start transmission
-        UCA1TXBUF = spiSM.pcTxBuffer[spiSM.uiCurTx];
+//        UCA1TXBUF = spiSM.pcTxBuffer[spiSM.uiCurTx];
 
         // Sleep until receive occurs
-        while(!(UCA1IFG & UCRXIFG));
-        spiSM.pcRxBuffer[spiSM.uiCurRx] = UCA1RXBUF;
-        UCA1IFG &= ~UCRXIFG;
-        UCA1IFG &= ~UCTXIFG;
+//        while(!(UCA1IFG & UCRXIFG));
+//        spiSM.pcRxBuffer[spiSM.uiCurRx] = UCA1RXBUF;
+//        UCA1IFG &= ~UCRXIFG;
+//        UCA1IFG &= ~UCTXIFG;
         // Move to next TX and RX index
         spiSM.uiCurTx++;
         spiSM.uiCurRx++;

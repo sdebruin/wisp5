@@ -24,9 +24,9 @@ static BOOL wakeOnDelayTimer;       // A flag indicating we are waiting for a de
 /////////////////////////////////////////////////////////////////////////////
 void Timer_LooseDelay(uint16_t usTime32kHz)
 {
-    TA2CCTL0 = CCIE;                          // CCR0 interrupt enabled
-    TA2CCR0 = usTime32kHz;
-    TA2CTL = TASSEL_1 | MC_1 | TACLR;         // ACLK(=REFO), upmode, clear TAR
+    TBCCTL0 = CCIE;                          // CCR0 interrupt enabled
+    TBCCR0 = usTime32kHz;
+    TBCTL = TASSEL_1 | MC_1 | TACLR;         // ACLK(=REFO), upmode, clear TAR
 
     wakeOnDelayTimer = TRUE;
 
@@ -34,8 +34,8 @@ void Timer_LooseDelay(uint16_t usTime32kHz)
         __bis_SR_register(LPM3_bits | GIE);
     }
 
-    TA2CCTL0 = 0x00;
-    TA2CTL = 0;
+    TBCCTL0 = 0x00;
+    TBCTL = 0;
 
 }
 
