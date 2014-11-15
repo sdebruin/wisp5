@@ -80,7 +80,7 @@ int main(void) {
     // Set up timer capture
     TB0CCTL0 = CM_1 + CCIS_0 + CAP;  	// Capture on rising edge for preamble
     TB0CCTL0 &= ~CCIFG;
-    TB0CTL = TBSSEL_2 + MC_2 + TBCLR;
+    TB0CTL = TBSSEL_2 + MC_2 + TBCLR + ID_2;
     TB0CCTL0 |= CCIE;
 
     // Initialize mode
@@ -89,14 +89,12 @@ int main(void) {
     __enable_interrupt();
 
     while(1) {
-    	volatile unsigned int i = 0;
+    	volatile unsigned long i = 0;
 
     	LED1_OUT ^= LED1_PIN;
 
-    	for(i = 10000; i > 0; i--);
+    	for(i = 1000000; i > 0; i--);
     }
-	
-	return 0;
 }
 
 #pragma vector=TIMERB0_VECTOR
@@ -112,7 +110,9 @@ __interrupt void TIMER_B (void) {
 	switch(rf_mode) {
 	case rf_idle:
 		rf_mode = rf_inInv_d0;
-		d0_len = TB0CCR0;
+		TB0CTL |= TBCLR;
+		//d0_len = TB0CCR0;
+		d0_len = 0;
 		break;
 	case rf_inInv_d0:
 		rf_mode = rf_inInv_RTCal;

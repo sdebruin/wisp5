@@ -1,10 +1,10 @@
 ******************************************************************************
                   MSP430 Linker PC v4.3.3                      
 ******************************************************************************
->> Linked Sat Nov 15 13:55:58 2014
+>> Linked Sat Nov 15 14:25:52 2014
 
 OUTPUT FILE NAME:   <powerblade.out>
-ENTRY POINT SYMBOL: "_c_int00"  address: 0000c618
+ENTRY POINT SYMBOL: "_c_int00"  address: 0000c62e
 
 
 MEMORY CONFIGURATION
@@ -17,7 +17,7 @@ MEMORY CONFIGURATION
   INFOB                 00001800   00000080  00000000  00000080  RWIX
   INFOA                 00001880   00000080  00000000  00000080  RWIX
   RAM                   00001c00   00000400  000000c4  0000033c  RWIX
-  FRAM                  0000c200   00003d80  00000440  00003940  RWIX
+  FRAM                  0000c200   00003d80  00000456  0000392a  RWIX
   JTAGSIGNATURE         0000ff80   00000004  00000004  00000000  RWIX  ffff 
   BSLSIGNATURE          0000ff84   00000004  00000004  00000000  RWIX  ffff 
   IPESIGNATURE          0000ff88   00000008  00000008  00000000  RWIX  ffff 
@@ -123,15 +123,15 @@ section   page    origin      length       input sections
 
 .const     0    0000c212    00000000     UNINITIALIZED
 
-.text      0    0000c400    00000240     
-                  0000c400    000000cc     main.obj (.text:_isr:TIMER_B)
-                  0000c4cc    0000008a     main.obj (.text:main)
-                  0000c556    00000084     rts430x_lc_sd_eabi.lib : autoinit.obj (.text:_auto_init_hold_wdt)
-                  0000c5da    0000003e                            : copy_zero_init.obj (.text:decompress:ZI:__TI_zero_init)
-                  0000c618    0000001a                            : boot.obj (.text:_isr:_c_int00_noexit)
-                  0000c632    00000006                            : isr_trap.obj (.text:__TI_ISR_TRAP)
-                  0000c638    00000004                            : pre_init.obj (.text:_system_pre_init)
-                  0000c63c    00000004                            : exit.obj (.text:abort)
+.text      0    0000c400    00000256     
+                  0000c400    000000ce     main.obj (.text:_isr:TIMER_B)
+                  0000c4ce    0000009e     main.obj (.text:main)
+                  0000c56c    00000084     rts430x_lc_sd_eabi.lib : autoinit.obj (.text:_auto_init_hold_wdt)
+                  0000c5f0    0000003e                            : copy_zero_init.obj (.text:decompress:ZI:__TI_zero_init)
+                  0000c62e    0000001a                            : boot.obj (.text:_isr:_c_int00_noexit)
+                  0000c648    00000006                            : isr_trap.obj (.text:__TI_ISR_TRAP)
+                  0000c64e    00000004                            : pre_init.obj (.text:_system_pre_init)
+                  0000c652    00000004                            : exit.obj (.text:abort)
 
 $fill000   0    0000ff80    00000004     
                   0000ff80    00000004     --HOLE-- [fill = ffff]
@@ -251,7 +251,7 @@ address    name
 00000712   ADC10MEM0_L
 000004be   BCD2BIN
 000004bc   BIN2BCD
-0000c63c   C$$EXIT
+0000c652   C$$EXIT
 000008c0   CDCTL0
 000008c1   CDCTL0_H
 000008c0   CDCTL0_L
@@ -697,7 +697,7 @@ address    name
 0000c20a   __TI_Handler_Table_Limit
 UNDEFED    __TI_INITARRAY_Base
 UNDEFED    __TI_INITARRAY_Limit
-0000c632   __TI_ISR_TRAP
+0000c648   __TI_ISR_TRAP
 00000001   __TI_args_main
 00000001   __TI_exit
 0000ffce   __TI_int31
@@ -717,22 +717,22 @@ UNDEFED    __TI_INITARRAY_Limit
 0000fff8   __TI_int52
 0000fffa   __TI_int53
 0000fffc   __TI_int54
-0000c5da   __TI_zero_init
+0000c5f0   __TI_zero_init
 ffffffff   __binit__
 ffffffff   __c_args__
-0000c556   _auto_init_hold_wdt
-0000c618   _c_int00
-0000c618   _c_int00_noexit
+0000c56c   _auto_init_hold_wdt
+0000c62e   _c_int00
+0000c62e   _c_int00_noexit
 0000fffe   _reset_vector
 00001f60   _stack
-0000c638   _system_pre_init
-0000c63c   abort
+0000c64e   _system_pre_init
+0000c652   abort
 ffffffff   binit
 00001c16   d0_len
 0000c200   fram_ro_start
 0000c200   fram_rw_start
 0000c400   fram_rx_start
-0000c4cc   main
+0000c4ce   main
 00001c18   query_bitcount
 00001c1a   query_bittime
 00001c00   query_buf
@@ -1235,15 +1235,15 @@ address    name
 0000c212   __TI_CINIT_Limit
 0000c400   TIMER_B
 0000c400   fram_rx_start
-0000c4cc   main
-0000c556   _auto_init_hold_wdt
-0000c5da   __TI_zero_init
-0000c618   _c_int00
-0000c618   _c_int00_noexit
-0000c632   __TI_ISR_TRAP
-0000c638   _system_pre_init
-0000c63c   C$$EXIT
-0000c63c   abort
+0000c4ce   main
+0000c56c   _auto_init_hold_wdt
+0000c5f0   __TI_zero_init
+0000c62e   _c_int00
+0000c62e   _c_int00_noexit
+0000c648   __TI_ISR_TRAP
+0000c64e   _system_pre_init
+0000c652   C$$EXIT
+0000c652   abort
 0000ffce   __TI_int31
 0000ffd8   __TI_int36
 0000ffde   __TI_int39
