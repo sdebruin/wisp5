@@ -51,6 +51,7 @@ uint16_t blf;
 uint16_t query_bitcount;
 uint16_t query_bittime;
 char query_buf[QUERY_LEN];
+char halfBit;
 
 int main(void) {
     WDTCTL = WDTPW | WDTHOLD;	// Stop watchdog timer
@@ -128,6 +129,7 @@ __interrupt void TIMER_B (void) {
 	case rf_inInv_TRCal:
 		rf_mode = rf_inInv_query;
 		tr_len = TB0CCR0 - tr_len;
+		blf = 8;
 		query_bitcount = QUERY_LEN - 1;
 		query_bittime = TB0CCR0;
 		break;
@@ -144,6 +146,16 @@ __interrupt void TIMER_B (void) {
 			//if((query_buf && QUERY_COMMASK) == QUERY_COMMAND) {
 				//if((query_buf && QUERY_QMASK) == 0) {
 					rf_mode = rf_inInv_queryReply;
+
+					// Switch to replying mode:
+					TB0CTL |= TBCLR;
+					TB0CCTL0 = CCIE;	// Set to compare mode
+					TB0CCR0 = rt_len;	// Set to tx time
+
+					memcpy(query_buf, "1111111111111111110101", QUERY_LEN);
+					query_bitcount = QUERY_LEN;
+					halfBit = 0;
+
 					P1OUT ^= BIT3;
 					P1OUT ^= BIT3;
 					break;
@@ -155,5 +167,34 @@ __interrupt void TIMER_B (void) {
 			query_bittime = TB0CCR0;
 			break;
 		}
+	case rf_inInv_queryReply:
+
+		if(query_bitcount == 0) {
+			P2OUT &= ~TX_PIN;
+			P2OUT &= ~TX_PIN;
+			rf_mode = rf_idle;
+			break;
+		}
+
+		if(query_bitcount != 18) {
+			P2OUT ^= TX_PIN;
+		}
+		TB0CCR0 = blf;
+
+		if(query_buf[--query_bitcount] == '0') {
+			TB0CCR1 = (blf >> 1);
+			TB0CCTL1 = CCIE;
+		}
+
+		TB0CTL |= TBCLR;
+		break;
 	}
 }
+
+#pragma vector=TIMERB1_VECTOR
+__interrupt void TIMER_B1 (void) {
+	TB0CCTL1 = 0;
+	P2OUT ^= TX_PIN;
+}
+
+
