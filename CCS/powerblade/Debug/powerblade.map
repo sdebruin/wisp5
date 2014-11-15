@@ -1,10 +1,10 @@
 ******************************************************************************
                   MSP430 Linker PC v4.3.3                      
 ******************************************************************************
->> Linked Fri Nov 14 17:11:40 2014
+>> Linked Sat Nov 15 13:55:58 2014
 
 OUTPUT FILE NAME:   <powerblade.out>
-ENTRY POINT SYMBOL: "_c_int00"  address: 0000c616
+ENTRY POINT SYMBOL: "_c_int00"  address: 0000c618
 
 
 MEMORY CONFIGURATION
@@ -16,8 +16,8 @@ MEMORY CONFIGURATION
   PERIPHERALS_16BIT     00000100   00000100  00000000  00000100  RWIX
   INFOB                 00001800   00000080  00000000  00000080  RWIX
   INFOA                 00001880   00000080  00000000  00000080  RWIX
-  RAM                   00001c00   00000400  000000a8  00000358  RWIX
-  FRAM                  0000c200   00003d80  0000043e  00003942  RWIX
+  RAM                   00001c00   00000400  000000c4  0000033c  RWIX
+  FRAM                  0000c200   00003d80  00000440  00003940  RWIX
   JTAGSIGNATURE         0000ff80   00000004  00000004  00000000  RWIX  ffff 
   BSLSIGNATURE          0000ff84   00000004  00000004  00000000  RWIX  ffff 
   IPESIGNATURE          0000ff88   00000008  00000008  00000000  RWIX  ffff 
@@ -84,11 +84,15 @@ SECTION ALLOCATION MAP
  output                                  attributes/
 section   page    origin      length       input sections
 --------  ----  ----------  ----------   ----------------
-.bss       0    00001c00    00000008     UNINITIALIZED
-                  00001c00    00000002     (.common:RFID_mode)
-                  00001c02    00000002     (.common:RT_start)
-                  00001c04    00000002     (.common:pulseWidth)
-                  00001c06    00000002     (.common:timePeriod)
+.bss       0    00001c00    00000024     UNINITIALIZED
+                  00001c00    00000016     (.common:query_buf)
+                  00001c16    00000002     (.common:d0_len)
+                  00001c18    00000002     (.common:query_bitcount)
+                  00001c1a    00000002     (.common:query_bittime)
+                  00001c1c    00000002     (.common:rf_mode)
+                  00001c1e    00000002     (.common:rt_len)
+                  00001c20    00000002     (.common:rt_pivot)
+                  00001c22    00000002     (.common:tr_len)
 
 .stack     0    00001f60    000000a0     UNINITIALIZED
                   00001f60    00000002     rts430x_lc_sd_eabi.lib : boot.obj (.stack)
@@ -119,15 +123,15 @@ section   page    origin      length       input sections
 
 .const     0    0000c212    00000000     UNINITIALIZED
 
-.text      0    0000c400    0000023e     
-                  0000c400    000000ca     main.obj (.text:_isr:TIMER_B)
-                  0000c4ca    0000008a     main.obj (.text:main)
-                  0000c554    00000084     rts430x_lc_sd_eabi.lib : autoinit.obj (.text:_auto_init_hold_wdt)
-                  0000c5d8    0000003e                            : copy_zero_init.obj (.text:decompress:ZI:__TI_zero_init)
-                  0000c616    0000001a                            : boot.obj (.text:_isr:_c_int00_noexit)
-                  0000c630    00000006                            : isr_trap.obj (.text:__TI_ISR_TRAP)
-                  0000c636    00000004                            : pre_init.obj (.text:_system_pre_init)
-                  0000c63a    00000004                            : exit.obj (.text:abort)
+.text      0    0000c400    00000240     
+                  0000c400    000000cc     main.obj (.text:_isr:TIMER_B)
+                  0000c4cc    0000008a     main.obj (.text:main)
+                  0000c556    00000084     rts430x_lc_sd_eabi.lib : autoinit.obj (.text:_auto_init_hold_wdt)
+                  0000c5da    0000003e                            : copy_zero_init.obj (.text:decompress:ZI:__TI_zero_init)
+                  0000c618    0000001a                            : boot.obj (.text:_isr:_c_int00_noexit)
+                  0000c632    00000006                            : isr_trap.obj (.text:__TI_ISR_TRAP)
+                  0000c638    00000004                            : pre_init.obj (.text:_system_pre_init)
+                  0000c63c    00000004                            : exit.obj (.text:abort)
 
 $fill000   0    0000ff80    00000004     
                   0000ff80    00000004     --HOLE-- [fill = ffff]
@@ -202,7 +206,7 @@ SYSNMI     0    0000fffc    00000002
 LINKER GENERATED COPY TABLES
 
 __TI_cinit_table @ 0000c20a records: 1, size/record: 8, table size: 8
-	.bss: load addr=0000c200, load size=00000006 bytes, run addr=00001c00, run size=00000008 bytes, compression=zero_init
+	.bss: load addr=0000c200, load size=00000006 bytes, run addr=00001c00, run size=00000024 bytes, compression=zero_init
 
 
 LINKER GENERATED HANDLER TABLE
@@ -247,7 +251,7 @@ address    name
 00000712   ADC10MEM0_L
 000004be   BCD2BIN
 000004bc   BIN2BCD
-0000c63a   C$$EXIT
+0000c63c   C$$EXIT
 000008c0   CDCTL0
 000008c1   CDCTL0_H
 000008c0   CDCTL0_L
@@ -493,7 +497,6 @@ address    name
 000004ca   RESLO
 000004cb   RESLO_H
 000004ca   RESLO_L
-00001c00   RFID_mode
 000004ba   RTCADOWDAY
 000004bb   RTCADOWDAY_H
 000004ba   RTCADOWDAY_L
@@ -528,7 +531,6 @@ address    name
 000004b6   RTCYEAR
 000004b7   RTCYEAR_H
 000004b6   RTCYEAR_L
-00001c02   RT_start
 00000100   SFRIE1
 00000101   SFRIE1_H
 00000100   SFRIE1_L
@@ -695,7 +697,7 @@ address    name
 0000c20a   __TI_Handler_Table_Limit
 UNDEFED    __TI_INITARRAY_Base
 UNDEFED    __TI_INITARRAY_Limit
-0000c630   __TI_ISR_TRAP
+0000c632   __TI_ISR_TRAP
 00000001   __TI_args_main
 00000001   __TI_exit
 0000ffce   __TI_int31
@@ -715,23 +717,29 @@ UNDEFED    __TI_INITARRAY_Limit
 0000fff8   __TI_int52
 0000fffa   __TI_int53
 0000fffc   __TI_int54
-0000c5d8   __TI_zero_init
+0000c5da   __TI_zero_init
 ffffffff   __binit__
 ffffffff   __c_args__
-0000c554   _auto_init_hold_wdt
-0000c616   _c_int00
-0000c616   _c_int00_noexit
+0000c556   _auto_init_hold_wdt
+0000c618   _c_int00
+0000c618   _c_int00_noexit
 0000fffe   _reset_vector
 00001f60   _stack
-0000c636   _system_pre_init
-0000c63a   abort
+0000c638   _system_pre_init
+0000c63c   abort
 ffffffff   binit
+00001c16   d0_len
 0000c200   fram_ro_start
 0000c200   fram_rw_start
 0000c400   fram_rx_start
-0000c4ca   main
-00001c04   pulseWidth
-00001c06   timePeriod
+0000c4cc   main
+00001c18   query_bitcount
+00001c1a   query_bittime
+00001c00   query_buf
+00001c1c   rf_mode
+00001c1e   rt_len
+00001c20   rt_pivot
+00001c22   tr_len
 
 
 GLOBAL SYMBOLS: SORTED BY Symbol Address 
@@ -1209,10 +1217,14 @@ address    name
 000008ce   CDIV
 000008ce   CDIV_L
 000008cf   CDIV_H
-00001c00   RFID_mode
-00001c02   RT_start
-00001c04   pulseWidth
-00001c06   timePeriod
+00001c00   query_buf
+00001c16   d0_len
+00001c18   query_bitcount
+00001c1a   query_bittime
+00001c1c   rf_mode
+00001c1e   rt_len
+00001c20   rt_pivot
+00001c22   tr_len
 00001f60   _stack
 00002000   __STACK_END
 0000c200   fram_ro_start
@@ -1223,15 +1235,15 @@ address    name
 0000c212   __TI_CINIT_Limit
 0000c400   TIMER_B
 0000c400   fram_rx_start
-0000c4ca   main
-0000c554   _auto_init_hold_wdt
-0000c5d8   __TI_zero_init
-0000c616   _c_int00
-0000c616   _c_int00_noexit
-0000c630   __TI_ISR_TRAP
-0000c636   _system_pre_init
-0000c63a   C$$EXIT
-0000c63a   abort
+0000c4cc   main
+0000c556   _auto_init_hold_wdt
+0000c5da   __TI_zero_init
+0000c618   _c_int00
+0000c618   _c_int00_noexit
+0000c632   __TI_ISR_TRAP
+0000c638   _system_pre_init
+0000c63c   C$$EXIT
+0000c63c   abort
 0000ffce   __TI_int31
 0000ffd8   __TI_int36
 0000ffde   __TI_int39
@@ -1256,4 +1268,4 @@ ffffffff   binit
 UNDEFED    __TI_INITARRAY_Base
 UNDEFED    __TI_INITARRAY_Limit
 
-[517 symbols]
+[521 symbols]

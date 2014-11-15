@@ -14,19 +14,43 @@
 #define LED2_OUT	P2OUT
 #define LED3_OUT	P1OUT
 
+// Definitions for query command
+#define QUERY_LEN	22
+#define QUERY_COMMAND	0x200000
+#define QUERY_COMMASK	0x3C0000
+#define QUERY_DRMASK	0x020000
+#define QUERY_MMASK		0x018000
+#define QUERY_TRMASK	0x004000
+#define QUERY_SELMASK	0x003000
+#define QUERY_SESMASK	0x000C00
+#define QUERY_TARMASK	0x000200
+#define QUERY_QMASK		0x0001E0
+#define QUERY_CRCMASK	0x00001F
+
 typedef enum {
-	idle,
-	preamble_data,
-	preamble_RT,
-	preamble_TR_high,
-	preamble_TR_low
-} mode_t;
+	rf_idle,
+	rf_inInv_d0,
+	rf_inInv_RTCal,
+	rf_inInv_TRCal,
+	rf_inInv_query,
+	rf_inInv_queryReply,
+	rf_inInv_queryArb,
+	rf_inMsg
+} rf_mode_t;
 
-mode_t RFID_mode;
+rf_mode_t rf_mode;
 
-uint16_t RT_start;
-uint16_t timePeriod;
-uint16_t pulseWidth;
+// Globals used in preamble timing capture
+uint16_t d0_len;
+uint16_t rt_len;
+uint16_t rt_pivot;
+uint16_t tr_len;
+uint16_t blf;
+
+// Globals used for query (from inventory round)
+uint16_t query_bitcount;
+uint16_t query_bittime;
+char query_buf[QUERY_LEN];
 
 int main(void) {
     WDTCTL = WDTPW | WDTHOLD;	// Stop watchdog timer
@@ -50,7 +74,7 @@ int main(void) {
     P2DIR |= TX_PIN;
     P2OUT &= ~TX_PIN;
 
-    // Set up debug output
+    // Set up debug output (I_SENSE)
     P1DIR |= BIT3;
 
     // Set up timer capture
@@ -60,7 +84,7 @@ int main(void) {
     TB0CCTL0 |= CCIE;
 
     // Initialize mode
-    RFID_mode = idle;
+    rf_mode = rf_idle;
 
     __enable_interrupt();
 
@@ -83,62 +107,53 @@ __interrupt void TIMER_B (void) {
 
 	// Indicate RX
 	LED2_OUT ^= LED2_PIN;
-	P1OUT |= BIT3;
+	P1OUT ^= BIT3;
 
-	switch(RFID_mode){
-	case idle:
-		RFID_mode = preamble_data;
-		RT_start = TB0CCR0;
-		P1OUT &= ~BIT3;
+	switch(rf_mode) {
+	case rf_idle:
+		rf_mode = rf_inInv_d0;
+		d0_len = TB0CCR0;
 		break;
-	case preamble_data:
-		RFID_mode = preamble_RT;
-		timePeriod = TB0CCR0 - RT_start;
-		pulseWidth = timePeriod >> 1;
-		P1OUT &= ~BIT3;
+	case rf_inInv_d0:
+		rf_mode = rf_inInv_RTCal;
+		d0_len = TB0CCR0 - d0_len;
+		rt_len = TB0CCR0;
 		break;
-	case preamble_RT:
-		RFID_mode = preamble_TR_high;
-
-		// Set compare interrupt to drive high when we should drive TX high
-		TB0CCTL0 &= ~CAP;
-		TB0CCR0 += timePeriod + timePeriod + pulseWidth;
-		TB0CCTL0 = CCIE;
-
-		P1OUT &= ~BIT3;
-		P1OUT &= ~BIT3;
-
+	case rf_inInv_RTCal:
+		rf_mode = rf_inInv_TRCal;
+		rt_len = TB0CCR0 - rt_len;
+		rt_pivot = rt_len >> 1;
+		tr_len = TB0CCR0;
 		break;
-	case preamble_TR_high:
-
-		P2OUT |= TX_PIN;
-		P2OUT |= TX_PIN;
-
-		RFID_mode = preamble_TR_low;
-
-		// Set compare interrupt to drive low when we should drive TX low
-		TB0CCR0 += pulseWidth;
-		TB0CCTL0 = CCIE;
-
-		P1OUT &= ~BIT3;
-		P1OUT &= ~BIT3;
-
+	case rf_inInv_TRCal:
+		rf_mode = rf_inInv_query;
+		tr_len = TB0CCR0 - tr_len;
+		query_bitcount = QUERY_LEN - 1;
+		query_bittime = TB0CCR0;
 		break;
-	case preamble_TR_low:
+	case rf_inInv_query:
+		query_bittime = TB0CCR0 - query_bittime;
+		if(query_bittime > rt_pivot) {	// Received a '1'
+			query_buf[query_bitcount] = 1;
+		}
+		else {
+			query_buf[query_bitcount] = 0;
+		}
 
-		P2OUT &= ~TX_PIN;
-		P2OUT &= ~TX_PIN;
-
-		RFID_mode = idle;
-
-		// Return capture to normal operation
-	    TB0CCTL0 = CM_1 + CCIS_0 + CAP;  	// Capture on rising edge for preamble
-	    TB0CCTL0 &= ~CCIFG;
-	    TB0CCTL0 |= CCIE;
-
-		P1OUT &= ~BIT3;
-		P1OUT &= ~BIT3;
-
-		break;
+		if(query_bitcount == 0) { 	// Query command over
+			//if((query_buf && QUERY_COMMASK) == QUERY_COMMAND) {
+				//if((query_buf && QUERY_QMASK) == 0) {
+					rf_mode = rf_inInv_queryReply;
+					P1OUT ^= BIT3;
+					P1OUT ^= BIT3;
+					break;
+				//}
+			//}
+		}
+		else {
+			query_bitcount--;
+			query_bittime = TB0CCR0;
+			break;
+		}
 	}
 }
