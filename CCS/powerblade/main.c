@@ -129,7 +129,7 @@ __interrupt void TIMER_B (void) {
 	case rf_inInv_TRCal:
 		rf_mode = rf_inInv_query;
 		tr_len = TB0CCR0 - tr_len;
-		blf = 8;
+		blf = 125;
 		query_bitcount = QUERY_LEN - 1;
 		query_bittime = TB0CCR0;
 		break;
@@ -150,7 +150,8 @@ __interrupt void TIMER_B (void) {
 					// Switch to replying mode:
 					TB0CTL |= TBCLR;
 					TB0CCTL0 = CCIE;	// Set to compare mode
-					TB0CCR0 = rt_len;	// Set to tx time
+					//TB0CCR0 = rt_len;	// Set to tx time
+					TB0CCR0 = 1500;
 
 					memcpy(query_buf, "1111111111111111110101", QUERY_LEN);
 					query_bitcount = QUERY_LEN;
